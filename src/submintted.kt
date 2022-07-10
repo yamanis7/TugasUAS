@@ -1,4 +1,8 @@
-import javax.swing.*
+import java.awt.Image
+import javax.swing.ImageIcon
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JPanel
 
 class submitted : JFrame() {
     private val panel2: JPanel? = null
@@ -12,13 +16,14 @@ class submitted : JFrame() {
         inpnim!!.text = nim
         inpipk!!.text = ipk
         inpmatkul!!.text = matkul
-        inppoto!!.text = paspoto
+        val Paspoto = ImageIcon(ImageIcon(paspoto).image.getScaledInstance(250, 250, Image.SCALE_SMOOTH))
+        inppoto!!.icon = Paspoto
     }
 
     init {
         contentPane = panel2
         title = "Data Mahasiswa"
-        setSize(500, 300)
+        setSize(500, 600)
         defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
     }

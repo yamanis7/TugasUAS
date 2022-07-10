@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.sql.DriverManager
 import javax.swing.*
+import javax.swing.filechooser.FileSystemView
 
 class datamhs : JFrame() {
     private val tfnama: JTextField? = null
@@ -10,38 +11,47 @@ class datamhs : JFrame() {
     private val btnsubmit: JButton? = null
     private val panel: JPanel? = null
     private val tfipk: JTextField? = null
-    private val inpnama: JLabel? = null
-    private val inpnim: JLabel? = null
-    private val inpipk: JLabel? = null
-    private val inpmatkul: JLabel? = null
     private val btnfoto: JButton? = null
+    private val getfoto: JLabel? = null
 
     init {
         contentPane = panel
         title = "Data Mahasiswa"
-        setSize(500, 300)
+        setSize(500, 600)
         defaultCloseOperation = EXIT_ON_CLOSE
         isVisible = true
-        btnfoto!!.addActionListener { }
+        btnfoto!!.addActionListener { e ->
+            val com = e.actionCommand
+            if (com == "save") {
+                val j = JFileChooser(FileSystemView.getFileSystemView().homeDirectory)
+                val r = j.showSaveDialog(null)
+                if (r == JFileChooser.APPROVE_OPTION) {
+                    getfoto!!.text = j.selectedFile.absolutePath
+                } else getfoto!!.text = "the user cancelled the operation"
+            } else {
+                val j = JFileChooser(FileSystemView.getFileSystemView().homeDirectory)
+                val r = j.showOpenDialog(null)
+                if (r == JFileChooser.APPROVE_OPTION) {
+                    getfoto!!.text = j.selectedFile.absolutePath
+                } else getfoto!!.text = "the user cancelled the operation"
+            }
+        }
         btnsubmit!!.addActionListener(object : ActionListener {
             override fun actionPerformed(e: ActionEvent) {
                 val nama = tfnama!!.text
                 val nim = tfnim!!.text
                 val ipk = tfipk!!.text
                 val matkul = tfmatkul!!.text
-                inpnama!!.text = nama
-                inpnim!!.text = nim
-                inpipk!!.text = ipk
-                inpmatkul!!.text = matkul
-                mhs = addDatabase(nama, nim, ipk, matkul)
-
-                //submitted subm = new submitted();
-                //subm.show();
-                //dispose();
+                val paspoto = getfoto!!.text
+                val subm = submitted()
+                subm.getData(nama, nim, ipk, matkul, paspoto)
+                subm.isVisible = true
+                dispose()
+                mhs = addDatabase(nama, nim, ipk, matkul, paspoto)
             }
 
             var mhs: dbmhs? = null
-            private fun addDatabase(nama: String, nim: String, ipk: String, matkul: String): dbmhs? {
+            private fun addDatabase(nama: String, nim: String, ipk: String, matkul: String, paspoto: String): dbmhs? {
                 var mhs: dbmhs? = null
                 val url = "jdbc:mysql://localhost/MahasiswaDB?serverTimezone=UTC"
                 val username = "root"
@@ -49,13 +59,14 @@ class datamhs : JFrame() {
                 try {
                     val conn = DriverManager.getConnection(url, username, password)
                     val statement = conn.createStatement()
-                    val sql = "INSERT INTO users (nama, nim, ipk, matkul)" +
-                            "VALUES (?, ?, ? ,?)"
+                    val sql = "INSERT INTO users (nama, nim, ipk, matkul, foto)" +
+                            "VALUES (?, ?, ? ,? ,?)"
                     val preparedStatement = conn.prepareStatement(sql)
                     preparedStatement.setString(1, nama)
                     preparedStatement.setString(2, nim)
                     preparedStatement.setString(3, ipk)
                     preparedStatement.setString(4, matkul)
+                    preparedStatement.setString(5, paspoto)
                     val addRows = preparedStatement.executeUpdate()
                     if (addRows > 0) {
                         mhs = dbmhs()
@@ -63,6 +74,7 @@ class datamhs : JFrame() {
                         mhs!!.nim = nim
                         mhs!!.ipk = ipk
                         mhs!!.matkul = matkul
+                        mhs!!.foto = paspoto
                     }
                     statement.close()
                     conn.close()
