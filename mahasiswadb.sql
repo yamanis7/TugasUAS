@@ -24,13 +24,14 @@ CREATE TABLE `users` (
   `nama` varchar(128) NOT NULL,
   `nim` varchar(128) NOT NULL,
   `ipk` varchar(11) NOT NULL,
-  `matkul` varchar(128) NOT NULL
+  `matkul` varchar(128) NOT NULL,
+  `foto` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `users` */
 
-insert  into `users`(`nama`,`nim`,`ipk`,`matkul`) values 
-('Fauzan Yamani','A11.2020.12927','3,1','PBO');
+insert  into `users`(`nama`,`nim`,`ipk`,`matkul`,`foto`) values 
+('Fauzan Yamani','A11.2020.12927','3','PBO','D:\\Photoshop\\momen\\biodatapoto.png');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
